@@ -24,6 +24,7 @@ class ArrayDictionary(BaseDictionary):
         @param words_frequencies: list of (word, frequency) to be stored
         """
         self.array_dictionary = words_frequencies
+        self.array_dictionary = sorted(self.array_dictionary, key=lambda a: a.word)
 
 
     def search(self, word: str) -> int:
@@ -32,12 +33,21 @@ class ArrayDictionary(BaseDictionary):
         @param word: the word to be searched
         @return: frequency > 0 if found and 0 if NOT found
         """
-        i = bisect.bisect_left(self.array_dictionary, word)
-        if i != len(self.array_dictionary) and self.array_dictionary[i].word == word:
-            return self.array_dictionary[i].frequency
-        else:
-            return 0
+        left = 0
+        right = len(self.array_dictionary) - 1
+        while left <= right:
+            mid = left + (right - left) // 2
 
+            if self.array_dictionary[mid].word == word:
+                return self.array_dictionary[mid].frequency
+
+            elif self.array_dictionary[mid].word < word:
+                left = mid + 1
+
+            else:
+                right = mid - 1
+
+        return 0
 
     def add_word_frequency(self, word_frequency: WordFrequency) -> bool:
         """
@@ -58,12 +68,24 @@ class ArrayDictionary(BaseDictionary):
         @return: whether succeeded, e.g. return False when point not found
         """
         # find the position of 'word' in the list, if exists, will be at idx-1
-        i = bisect.bisect_left(self.array_dictionary, word)
-        if i != len(self.array_dictionary) and self.array_dictionary[i].word == word:
-            self.array_dictionary.remove(i)
-            return True
-        else:
-            return False
+
+        left = 0
+        right = len(self.array_dictionary) - 1
+        while left <= right:
+            mid = left + (right - left) // 2
+            print(self.array_dictionary[mid].word)
+            if self.array_dictionary[mid].word == word:
+                print(self.array_dictionary[mid].word)
+                self.array_dictionary.remove(mid)
+                return True
+
+            elif self.array_dictionary[mid].word < word:
+                left = mid + 1
+
+            else:
+                right = mid - 1
+
+        return False
 
 
     def autocomplete(self, prefix_word: str) -> [WordFrequency]:
