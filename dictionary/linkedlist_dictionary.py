@@ -1,3 +1,5 @@
+import re
+
 from dictionary.base_dictionary import BaseDictionary
 from dictionary.word_frequency import WordFrequency
 
@@ -51,8 +53,8 @@ class LinkedListDictionary(BaseDictionary):
         while current_node is not None:
             if current_node.word_frequency.word == word:
                 return current_node.word_frequency.frequency
-            else:
-                current_node = current_node.next
+
+            current_node = current_node.next
 
         return 0
 
@@ -63,7 +65,17 @@ class LinkedListDictionary(BaseDictionary):
         :return: True whether succeeded, False when word is already in the dictionary
         """
 
-        return False
+        # check if the word appears in the linked list
+        if self.search(word_frequency.word) > 0:
+            return False
+        else:
+            # create new node, set the new node's next to the head
+            # point the head to the new node
+            new_node = ListNode(word_frequency)
+            new_node.next = self.head
+            self.head = new_node
+            return True
+
 
     def delete_word(self, word: str) -> bool:
         """
@@ -105,8 +117,30 @@ class LinkedListDictionary(BaseDictionary):
         @return: a list (could be empty) of (at most) 3 most-frequent words with prefix 'word'
         """
 
-        # TO BE IMPLEMENTED
-        return []
+        # set the head as the current node
+        current_node = self.head
+        # create a list to store the autocomplete words
+        autocomplete_list = list()
+        # regex to match the prefix word
+        pattern = "^" + word
+
+        # traverse the linked list and match the regex
+        while current_node is not None:
+            if re.match(pattern, current_node.word_frequency.word):
+                # if matched then add the word frequency object to the list
+                autocomplete_list.append(current_node.word_frequency)
+
+            current_node = current_node.next
+
+        # sort the list by frequency
+        sorted_autocomplete_list = sorted(autocomplete_list, key=lambda word: word.frequency, reverse=True)
+
+        # only trim off objects when there are more than 3
+        if len(sorted_autocomplete_list) > 3:
+            # delete from 3 beyond
+            del sorted_autocomplete_list[3:]
+
+        return sorted_autocomplete_list
 
 
 #         Code for testing

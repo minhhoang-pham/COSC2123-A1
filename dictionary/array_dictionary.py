@@ -117,16 +117,19 @@ class ArrayDictionary(BaseDictionary):
         # list to store the autocompleted words
         autocomplete_list = list()
         # pattern for regex matching
-        pattern = '^'+prefix_word
+        pattern = "^" + prefix_word
 
         # traverse the array then find the prefix matches and append them to the new list
         for i in range(len(self.array_dictionary)):
             if re.match(pattern, self.array_dictionary[i].word):
                 autocomplete_list.append((self.array_dictionary[i]))
 
-        # sort the autocomplete list
+        # sort the autocomplete list by frequency
         sorted_autocomplete_list = sorted(autocomplete_list, key=lambda word: word.frequency, reverse=True)
-        # delete everything except the top 3 values
-        del sorted_autocomplete_list[3:]
+
+        # trim off objects when there are more than 3
+        if len(sorted_autocomplete_list) > 3:
+            # delete from 3 beyond
+            del sorted_autocomplete_list[3:]
 
         return sorted_autocomplete_list
