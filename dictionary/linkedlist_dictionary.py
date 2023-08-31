@@ -22,7 +22,7 @@ class ListNode:
 class LinkedListDictionary(BaseDictionary):
 
     def __init__(self):
-        # TO BE IMPLEMENTED
+        self.head = None
         pass
 
 
@@ -31,7 +31,13 @@ class LinkedListDictionary(BaseDictionary):
         construct the data structure to store nodes
         @param words_frequencies: list of (word, frequency) to be stored
         """
-        # TO BE IMPLEMENTED
+        current_node = ListNode(words_frequencies[0])
+        self.head = current_node
+
+        for i in words_frequencies[1:]:
+            temp = ListNode(i)
+            current_node.next = temp
+            current_node = temp
 
 
     def search(self, word: str) -> int:
@@ -40,8 +46,14 @@ class LinkedListDictionary(BaseDictionary):
         @param word: the word to be searched
         @return: frequency > 0 if found and 0 if NOT found
         """
+        current_node = self.head
 
-        # TO BE IMPLEMENTED
+        while current_node is not None:
+            if current_node.word_frequency.word == word:
+                return current_node.word_frequency.frequency
+            else:
+                current_node = current_node.next
+
         return 0
 
     def add_word_frequency(self, word_frequency: WordFrequency) -> bool:
@@ -51,7 +63,6 @@ class LinkedListDictionary(BaseDictionary):
         :return: True whether succeeded, False when word is already in the dictionary
         """
 
-        # TO BE IMPLEMENTED
         return False
 
     def delete_word(self, word: str) -> bool:
@@ -61,7 +72,29 @@ class LinkedListDictionary(BaseDictionary):
         @return: whether succeeded, e.g. return False when point not found
         """
 
-        # TO BE IMPLEMENTED
+        current_node = self.head
+        previous_node = None
+
+        while current_node is not None:
+            if current_node.word_frequency.word == word:
+                # when the deleted node is the head
+                if current_node == self.head:
+                    self.head = current_node.next
+                    return True
+
+                # when the deleted node is the last node
+                if current_node.next is None:
+                    previous_node.next = None
+                    return True
+
+                # when the deleted node is in the middle
+                else:
+                    previous_node.next = current_node.next
+                    return True
+
+            previous_node = current_node
+            current_node = current_node.next
+
         return False
 
 
@@ -76,4 +109,15 @@ class LinkedListDictionary(BaseDictionary):
         return []
 
 
+#         Code for testing
+#         print(self.head.word_frequency.word)
+#         current_node = self.head
+#
+#         while True:
+#             if current_node.next is not None:
+#                 print(current_node.word_frequency.word + " Next: " + current_node.next.word_frequency.word)
+#                 current_node = current_node.next
+#             else:
+#                 break
+#         print(current_node.word_frequency.word)
 
