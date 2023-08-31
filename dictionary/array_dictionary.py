@@ -1,5 +1,6 @@
 from dictionary.word_frequency import WordFrequency
 from dictionary.base_dictionary import BaseDictionary
+import re
 import bisect
 
 
@@ -33,11 +34,14 @@ class ArrayDictionary(BaseDictionary):
         @param word: the word to be searched
         @return: frequency > 0 if found and 0 if NOT found
         """
+
+        # perform binary search
         left = 0
         right = len(self.array_dictionary) - 1
         while left <= right:
             mid = left + (right - left) // 2
 
+            # search for the word then return its frequency
             if self.array_dictionary[mid].word == word:
                 return self.array_dictionary[mid].frequency
 
@@ -55,11 +59,25 @@ class ArrayDictionary(BaseDictionary):
         @param word_frequency: (word, frequency) to be added
         :return: True whether succeeded, False when word is already in the dictionary
         """
-        if self.search(word_frequency.word) == 0:
-            bisect.insort(self.array_dictionary, word_frequency)
-            return True
+
+        index = len(self.array_dictionary)
+        # Searching for the position
+        for i in range(len(self.array_dictionary)):
+            if self.array_dictionary[i].word == word_frequency.word:
+                return False
+            if self.array_dictionary[i].word > word_frequency.word:
+                index = i
+                break
+
+        # Inserting n in the list
+        if index == len(self.array_dictionary):
+            self.array_dictionary = self.array_dictionary[:index] + [word_frequency]
         else:
-            return False
+            self.array_dictionary = self.array_dictionary[:index] + [word_frequency] + self.array_dictionary[index:]
+
+        return True
+
+
 
     def delete_word(self, word: str) -> bool:
         """
@@ -69,14 +87,16 @@ class ArrayDictionary(BaseDictionary):
         """
         # find the position of 'word' in the list, if exists, will be at idx-1
 
+        # perform binary search
         left = 0
         right = len(self.array_dictionary) - 1
         while left <= right:
             mid = left + (right - left) // 2
-            print(self.array_dictionary[mid].word)
+
+            # look for the word to delete
             if self.array_dictionary[mid].word == word:
-                print(self.array_dictionary[mid].word)
-                self.array_dictionary.remove(mid)
+                # delete word from list
+                del self.array_dictionary[mid]
                 return True
 
             elif self.array_dictionary[mid].word < word:
@@ -84,7 +104,6 @@ class ArrayDictionary(BaseDictionary):
 
             else:
                 right = mid - 1
-
         return False
 
 
@@ -95,17 +114,19 @@ class ArrayDictionary(BaseDictionary):
         @return: a list (could be empty) of (at most) 3 most-frequent words with prefix 'prefix_word'
         """
 
+        # list to store the autocompleted words
         autocomplete_list = list()
+        # pattern for regex matching
+        pattern = '^'+prefix_word
 
-        i = 0
-        while prefix_word not in self.array_dictionary:
-            i += 1
+        # traverse the array then find the prefix matches and append them to the new list
+        for i in range(len(self.array_dictionary)):
+            if re.match(pattern, self.array_dictionary[i].word):
+                autocomplete_list.append((self.array_dictionary[i]))
 
-        if i != len(self.array_dictionary):
-            while prefix_word in self.array_dictionary:
-                autocomplete_list.append(self.array_dictionary[i])
-                i += 1
-
+        # sort the autocomplete list
         sorted_autocomplete_list = sorted(autocomplete_list, key=lambda word: word.frequency, reverse=True)
+        # delete everything except the top 3 values
+        del sorted_autocomplete_list[3:]
 
         return sorted_autocomplete_list
