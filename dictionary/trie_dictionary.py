@@ -137,7 +137,10 @@ class TrieDictionary(BaseDictionary):
         @return: a list (could be empty) of (at most) 3 most-frequent words with prefix 'word'
         """
 
+        # print(self.root.children["d"].children["i"].children["s"].children["t"].children["i"].children["l"])
+
         autocomplete_list = list()
+        overlap = False
 
         node = self.root
 
@@ -147,13 +150,18 @@ class TrieDictionary(BaseDictionary):
                 return autocomplete_list
             node = node.children[a]
 
-        # If prefix is present as a word, but
-        # there is no subtree below the last
-        # matching node.
+        # check if the current node has any children
         if not node.children:
-            return autocomplete_list
+            if node.is_last:
+                # if it doesn't have any children but the prefix matches the word then add the word
+                autocomplete_list.append(WordFrequency(word, self.search(word)))
+                overlap = True
+            else:
+                # otherwise, return an empty list
+                return autocomplete_list
 
-        self.suggestions_rec(node, word, autocomplete_list)
+        if not overlap:
+            self.suggestions_rec(node, word, autocomplete_list)
 
         # sort the list by frequency
         sorted_autocomplete_list = sorted(autocomplete_list, key=lambda w: w.frequency, reverse=True)
@@ -189,7 +197,6 @@ class TrieDictionary(BaseDictionary):
 
         for letter in word:
             if letter in current_node.children:
-                print(current_node.children[letter].letter, current_node.children[letter].is_last)
                 current_node = current_node.children[letter]
             else:
                 return TrieNode()
