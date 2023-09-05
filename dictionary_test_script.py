@@ -128,7 +128,7 @@ def main():
                 print(sExpectedFile + " is missing.")
                 continue
 
-            sCommand = 'python {sExec} {sImpl} "{sDataFile}" "{sInFile}" "{sOutputFile}"'.format(sExec=sExec,
+            sCommand = 'python3 {sExec} {sImpl} "{sDataFile}" "{sInFile}" "{sOutputFile}"'.format(sExec=sExec,
                                                                                                  sImpl=sImpl,
                                                                                                  sDataFile=sDataFile,
                                                                                                  sInFile=sInFile,
