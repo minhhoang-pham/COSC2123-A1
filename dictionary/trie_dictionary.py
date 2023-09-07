@@ -142,17 +142,17 @@ class TrieDictionary(BaseDictionary):
         autocomplete_list = list()
         overlap = False
 
-        node = self.root
+        current_node = self.root
 
         for a in word:
             # no string in the Trie has this prefix
-            if not node.children.get(a):
+            if not current_node.children.get(a):
                 return autocomplete_list
-            node = node.children[a]
+            current_node = current_node.children[a]
 
         # check if the current node has any children
-        if not node.children:
-            if node.is_last:
+        if not current_node.children:
+            if current_node.is_last:
                 # if it doesn't have any children but the prefix matches the word then add the word
                 autocomplete_list.append(WordFrequency(word, self.search(word)))
                 overlap = True
@@ -161,7 +161,7 @@ class TrieDictionary(BaseDictionary):
                 return autocomplete_list
 
         if not overlap:
-            self.suggestions_rec(node, word, autocomplete_list)
+            self.suggestions_rec(current_node, word, autocomplete_list)
 
         # sort the list by frequency
         sorted_autocomplete_list = sorted(autocomplete_list, key=lambda w: w.frequency, reverse=True)
