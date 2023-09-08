@@ -73,7 +73,7 @@ if __name__ == '__main__':
         command_file = open(command_filename, 'r')
         output_file = open(output_filename, 'w')
 
-        start = time.process_time_ns()
+        start = time.perf_counter_ns()
 
         for line in command_file:
             command_values = line.split()
@@ -118,8 +118,8 @@ if __name__ == '__main__':
                 print('Unknown command.')
                 print(line)
 
-        end = time.process_time_ns()
-        print("Execution time:", end-start)
+        end = time.perf_counter_ns()
+        print("Execution time:", (end - start) / 1000, "microseconds")
 
         output_file.close()
         command_file.close()
