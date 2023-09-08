@@ -1,4 +1,5 @@
 import sys
+import time
 from dictionary.word_frequency import WordFrequency
 from dictionary.base_dictionary import BaseDictionary
 from dictionary.array_dictionary import ArrayDictionary
@@ -72,6 +73,8 @@ if __name__ == '__main__':
         command_file = open(command_filename, 'r')
         output_file = open(output_filename, 'w')
 
+        start = time.process_time_ns()
+
         for line in command_file:
             command_values = line.split()
             command = command_values[0]
@@ -114,6 +117,9 @@ if __name__ == '__main__':
             else:
                 print('Unknown command.')
                 print(line)
+
+        end = time.process_time_ns()
+        print("Execution time:", end-start)
 
         output_file.close()
         command_file.close()
