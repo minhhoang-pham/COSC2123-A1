@@ -60,9 +60,6 @@ class TrieDictionary(BaseDictionary):
 
             current_node = self.root
 
-        # for i in self.root.children:
-        #     print(self.root.children[i].letter)
-
     def search(self, word: str) -> int:
         """
         search for a word
@@ -71,7 +68,6 @@ class TrieDictionary(BaseDictionary):
         """
 
         end_node = self.node_search(word)
-        # print(end_node.letter, end_node.is_last)
         if end_node.is_last and end_node.frequency is not None:
             return end_node.frequency
 
@@ -107,6 +103,7 @@ class TrieDictionary(BaseDictionary):
                 if index != len(word_frequency.word)-1:
                     current_node.children[letter] = TrieNode(letter, None, False)
                     current_node = current_node.children[letter]
+                # if the letter exists and is the last letter, create a TrieNode
                 else:
                     current_node.children[letter] = TrieNode(letter, word_frequency.frequency, True)
                     return True
@@ -137,18 +134,16 @@ class TrieDictionary(BaseDictionary):
         @return: a list (could be empty) of (at most) 3 most-frequent words with prefix 'word'
         """
 
-        # print(self.root.children["d"].children["i"].children["s"].children["t"].children["i"].children["l"])
-
         autocomplete_list = list()
         overlap = False
 
         current_node = self.root
 
-        for a in word:
-            # no string in the Trie has this prefix
-            if not current_node.children.get(a):
+        for letter in word:
+            # check if the prefix exists
+            if not current_node.children.get(letter):
                 return autocomplete_list
-            current_node = current_node.children[a]
+            current_node = current_node.children[letter]
 
         # check if the current node has any children
         if not current_node.children:
@@ -175,10 +170,9 @@ class TrieDictionary(BaseDictionary):
 
     def suggestions_rec(self, node, word, ac_list):
 
-        # Method to recursively traverse the trie
-        # and return a whole word.
+        # recursively traverse the trie and return a list of type WordFrequency
         if node.is_last:
-            # print(word, self.search(word))
+            # Create a WordFrequency and add it to the list if node is last
             ac_list.append(WordFrequency(word, self.search(word)))
 
         for a, n in node.children.items():

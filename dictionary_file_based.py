@@ -69,7 +69,8 @@ if __name__ == '__main__':
     command_filename = args[3]
     output_filename = args[4]
 
-    start = time.process_time()
+    # uncomment below to start time testing
+    # start = time.process_time()
 
     # Parse the commands in command file
     try:
@@ -125,6 +126,6 @@ if __name__ == '__main__':
         print("Command file doesn't exist.")
         usage()
 
-    end = time.process_time()
-    print("Execution time:", (end - start) * 1000000, "microseconds")
-
+    # uncomment below to start time testing
+    # end = time.process_time()
+    # print("Execution time:", (end - start) * 1000000, "microseconds")

@@ -85,7 +85,6 @@ class ArrayDictionary(BaseDictionary):
         @param word: word to be deleted
         @return: whether succeeded, e.g. return False when point not found
         """
-        # find the position of 'word' in the list, if exists, will be at idx-1
 
         # perform binary search
         left = 0
